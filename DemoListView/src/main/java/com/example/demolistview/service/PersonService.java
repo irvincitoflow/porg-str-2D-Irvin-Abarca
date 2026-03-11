@@ -20,16 +20,19 @@ public class PersonService {
             String name = parts[0].trim();//Obtiene el nombre del arreglo
             String correo = parts[1].trim();//Obtiene el correo del arreglo
 
-            result.add(name+"-"+correo);//Se agrega a la lista de resultado con el formato deseado
+            String edad = (parts.length > 2) ? parts[2].trim() : " N/A";
+            result.add(name+"--"+correo+"--"+edad+" años");//Se agrega a la lista de resultado con el formato deseado
         }
         return result;
     }
 
-    public void addPerson(String name, String email) throws IOException {
+    public void addPerson(String name, String email, int age) throws IOException {
         validatePerson(name, email);
+        validateage(age);
+
         String nameNoComa= name.replace(",", "");
         String emailNoComa= email.replace(",", "");
-        repo.appendNewLine(nameNoComa+","+emailNoComa);
+        repo.appendNewLine(nameNoComa+","+emailNoComa+","+age);
     }
 
     private void validatePerson(String name, String email) {
@@ -41,4 +44,13 @@ public class PersonService {
             throw new IllegalArgumentException("El correo es invalido");
         }
     }
+    public void validateage(int Age) {
+        if (Age < 0 || Age > 120) {
+            throw new IllegalArgumentException("La edad debe estar entre 0 y 120 años");
+        }
+        if (Age < 18) {
+            throw new IllegalArgumentException("Debes ser mayor de edad para registrarte");
+        }
+    }
+
 }

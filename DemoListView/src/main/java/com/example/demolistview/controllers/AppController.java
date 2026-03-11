@@ -25,6 +25,10 @@ public class AppController {
     @FXML
     private TextField textEmail;
 
+    @FXML
+    private TextField textAge;
+
+
 
     @FXML
     private final ObservableList<String> data = FXCollections.observableArrayList();
@@ -42,12 +46,15 @@ public class AppController {
         try{
             String name= textName.getText();
             String email= textEmail.getText();
+            int age = Integer.parseInt(textAge.getText());
 
-            service.addPerson(name,email);
+            service.addPerson(name,email,age);
+
             lblMsg.setText("Persona agregada con exito");
             lblMsg.setStyle("-fx-text-fill: green");
             textName.clear();
             textEmail.clear();
+            textAge.clear();
             loadFromFile();
 
         }catch(IOException e){
