@@ -21,7 +21,7 @@ public class PersonService {
             String correo = parts[1].trim();//Obtiene el correo del arreglo
 
             String edad = (parts.length > 2) ? parts[2].trim() : " N/A";
-            result.add(name+"--"+correo+"--"+edad+" años");//Se agrega a la lista de resultado con el formato deseado
+            result.add(name+"-"+correo+"-"+edad+" años");//Se agrega a la lista de resultado con el formato deseado
         }
         return result;
     }
@@ -33,6 +33,27 @@ public class PersonService {
         String nameNoComa= name.replace(",", "");
         String emailNoComa= email.replace(",", "");
         repo.appendNewLine(nameNoComa+","+emailNoComa+","+age);
+    }
+
+    public void updatePerson(int index, String name,String email, String edad) throws IOException {
+        List<String> lines = getAllCleanLines();
+        if (index == -1){
+            throw new IllegalArgumentException("EL indice recibido es invalido");
+        }
+        lines.set(index, name+","+email+","+edad);
+        repo.appendAllLine(lines);
+
+    }
+
+    private List<String> getAllCleanLines() throws IOException {
+        List<String> lines = repo.readAllLines();
+        List<String> cleanlines = new ArrayList<>();
+        for (String line : lines) {
+            if (line!=null && !line.isBlank()) {
+                cleanlines.add(line);
+            }
+        }
+        return cleanlines;
     }
 
     private void validatePerson(String name, String email) {
@@ -52,5 +73,4 @@ public class PersonService {
             throw new IllegalArgumentException("Debes ser mayor de edad para registrarte");
         }
     }
-
 }

@@ -40,6 +40,12 @@ public class AppController {
         //Inicializar ListView
 
         loadFromFile();
+        listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            loadDataToForm(newValue); // String com el valor de row 0 test-@gmail.com-18
+                }
+        );
+
+
         listView.setItems(data);
     }
     public void onAddPerson(){
@@ -55,6 +61,7 @@ public class AppController {
             textName.clear();
             textEmail.clear();
             textAge.clear();
+
             loadFromFile();
 
         }catch(IOException e){
@@ -64,6 +71,29 @@ public class AppController {
             lblMsg.setText("Hubo un error con los datos");
             lblMsg.setStyle("-fx-text-fill: red");
         }
+    }
+    @FXML
+    public void onUpdate(){
+        int index=listView.getSelectionModel().getSelectedIndex();
+        loadFromFile();
+        lblMsg.setText("Persona actualizada con exito");
+        lblMsg.setStyle("-fx-text-fill: green");
+        String name= textName.getText();
+        String email= textEmail.getText();
+        String edad = textAge.getText();
+        try{
+            service.updatePerson(index,name,email,edad);
+            textName.clear();
+            textEmail.clear();
+            textAge.clear();
+        }catch(IOException e){
+            lblMsg.setText("Hubo un error con el archivo");
+            lblMsg.setStyle("-fx-text-fill: red");
+        }catch (IllegalArgumentException ex){
+            lblMsg.setText("Hubo un error con los datos");
+            lblMsg.setStyle("-fx-text-fill: red");
+        }
+
     }
 
     private void loadFromFile(){
@@ -76,6 +106,16 @@ public class AppController {
             lblMsg.setText(e.getMessage());
             lblMsg.setStyle("-fx-text-fill: red");
         }
+
+    }
+
+    private void loadDataToForm(String item){
+        // test-test@gmail.com-18
+        String[] parts = item.split("-");
+        textName.setText(parts[0]); //corresponde a la parte de el nombre
+        textEmail.setText(parts[1]); //corresponde a la parte del email
+        textAge.setText(parts[2]); // corresponde a la parte de la edad
+
 
     }
 
