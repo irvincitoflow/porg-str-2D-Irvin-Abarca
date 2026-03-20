@@ -19,9 +19,8 @@ public class PersonService {
             String[] parts = line.split("," , -1);
             String name = parts[0].trim();//Obtiene el nombre del arreglo
             String correo = parts[1].trim();//Obtiene el correo del arreglo
-
             String edad = (parts.length > 2) ? parts[2].trim() : " N/A";
-            result.add(name+"-"+correo+"-"+edad+" años");//Se agrega a la lista de resultado con el formato deseado
+            result.add(name+"-"+correo+"-"+edad);//Se agrega a la lista de resultado con el formato deseado
         }
         return result;
     }
@@ -41,6 +40,13 @@ public class PersonService {
             throw new IllegalArgumentException("EL indice recibido es invalido");
         }
         lines.set(index, name+","+email+","+edad);
+        repo.appendAllLine(lines);
+
+    }
+
+    public void deletePerson(int index) throws IOException {
+        List<String> lines = getAllCleanLines();
+        lines.remove(index);
         repo.appendAllLine(lines);
 
     }

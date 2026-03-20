@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppController {
@@ -28,6 +29,9 @@ public class AppController {
     @FXML
     private TextField textAge;
 
+    @FXML
+    private TextField txtBusqueda;
+
 
 
     @FXML
@@ -35,15 +39,43 @@ public class AppController {
 
     private PersonService service= new PersonService();
 
+    private void filtterList(String filter) {
+
+    }
+
     @FXML
     public void initialize(){ //se va a ejecutar el inicio, en cuanto se cargue el controller
         //Inicializar ListView
 
         loadFromFile();
+        txtBusqueda.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null && !newValue.isEmpty()){
+                System.out.println("Datos::::" + newValue);
+                List<String> ListFilter = new ArrayList<>();
+                for (String line : data){
+                    String[] parts = line.split("-" );
+                    if ( parts[1].contains(newValue)){
+                        ListFilter.add(line);
+
+                    }
+
+                }
+                data.setAll(ListFilter);
+
+            }else {
+                loadFromFile();
+            }
+
+        }
+        );
+
         listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             loadDataToForm(newValue); // String com el valor de row 0 test-@gmail.com-18
                 }
         );
+
+
+
 
 
         listView.setItems(data);
@@ -93,7 +125,29 @@ public class AppController {
             lblMsg.setText("Hubo un error con los datos");
             lblMsg.setStyle("-fx-text-fill: red");
         }
+    }
 
+    @FXML
+    public void onReload(){
+        loadFromFile();
+    }
+
+    @FXML
+    public void onDelete(){
+        int index=listView.getSelectionModel().getSelectedIndex();
+        try {
+            service.deletePerson(index);
+            loadFromFile();
+            lblMsg.setText("Persona eliminada con exito");
+            lblMsg.setStyle("-fx-text-fill: green");
+            textName.clear();
+            textEmail.clear();
+            textAge.clear();
+
+        }catch (IOException e){
+            lblMsg.setText("Hubo un error con los datos en eliminar");
+            lblMsg.setStyle("-fx-text-fill: red");
+        }
     }
 
     private void loadFromFile(){
@@ -118,5 +172,7 @@ public class AppController {
 
 
     }
+
+
 
 }
